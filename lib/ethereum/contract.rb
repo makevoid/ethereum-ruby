@@ -173,10 +173,18 @@ module Ethereum
               payload << formatter.to_payload(arg)
             end
             puts "--------------------------"
-            p args
+            p self.address
+            puts "--------------------------"
+            p self.sender
+            puts "--------------------------"
+            p payload.join()
             puts "--------------------------"
             puts
-            raw_result = connection.eth_call({to: self.address, from: self.sender, data: payload.join()})["result"]
+            resp = connection.eth_call({to: self.address, from: self.sender, data: payload.join()})
+            p resp
+            puts "--------------------------"
+            raw_result = resp["result"]
+            p raw_result
             formatted_result = fun.outputs.collect {|x| x.type }.zip(raw_result.gsub(/^0x/,'').scan(/.{64}/))
             output = formatted_result.collect {|x| formatter.from_payload(x) }
             return {data: "0x" + payload.join(), raw: raw_result, formatted: output}
